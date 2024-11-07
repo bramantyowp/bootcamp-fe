@@ -1,0 +1,351 @@
+import React from 'react';
+
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import Button from './src/component/button';
+import Icon from 'react-native-vector-icons/Feather';
+const Colors = {
+  primary: '#A43333',  // Red color for the header
+  lighter: '#f0f0f0',  // Light background for content
+  textGray: '#757575', // Gray color for text
+  green: '#4CAF50',  // Green for buttons and highlights
+  gray: '#dcdcdc',
+  redrom:'#AF392F',
+
+};
+const CARS =({
+  name :'innova zenix',
+  image:'http://ts1.mm.bing.net/th?id=OIP.QZu4IewK-iM2B5SXO2QCBgHaE8&pid=15.1' ,
+  passanger :4,
+  baggage: 40,
+  price:230000,
+},
+{
+  name :'Yaris',
+  image: 'https://www.bing.com/th?id=OIP.bUAHGVSNDHyRRdh8k0OqowHaE8&w=197&h=131&c=8&rs=1&qlt=90&o=6&dpr=1.5&pid=3.1&rm=2',
+  passanger :4,
+  baggage: 40,
+  price:230000,
+});
+const ButtonIcon = ({icon})=>(
+  <Button>
+    <Icon name={icon} size={30} color="#fff" />
+  </Button>
+);
+const CarItem = ({ car }) => (
+  <View style={styles.listItem}>
+    <Image source={{ uri: car.image }} style={styles.listItemImage} />
+    <View style={styles.listItemTextContainer}>
+      <Text style={styles.listItemTitle}>{car.name}</Text>
+      <View style={styles.listItemDetails}>
+        <Text style={styles.listItemDetailText}>Passengers: {car.passengers}</Text>
+        <Text style={styles.listItemDetailText}>Baggage: {car.baggage}</Text>
+      </View>
+    </View>
+    <Text style={styles.listItemPrice}>Rp {car.price.toLocaleString()}</Text>
+  </View>
+);
+
+function App() {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: Colors.lighter, // Lighter background for the content area
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={Colors.primary} // Set StatusBar background to red
+      />
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={backgroundStyle} // Lighter background for the ScrollView content
+      >
+        <View style={styles.header}>
+          <View style={styles.headerContainer}>
+            <View>
+              <Text style={styles.headerText}>Hi, Nama</Text>
+              <Text style={styles.headerTextLocation}>Your Location</Text>
+            </View>
+            <Image
+              style={styles.imagerounded}
+              source={{ uri: 'https://i.pravatar.cc/300' }}
+              width={50}
+              height={50}
+            />
+          </View>
+        </View>
+
+        <View style={styles.contentContainer}>
+          {/* Background merah untuk teks dan gambar */}
+          <View style={styles.textAndImageContainer}>
+            <View style={styles.textContentLeft}>
+              <Text style={styles.headerDisplayText}>SEWA MOBIL</Text>
+              <Text style={styles.headerDisplayText}>BERKUALITAS DI</Text>
+              <Text style={styles.headerDisplayText}>KAWASANMU</Text>
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Sewa Mobil</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{
+                  uri: 'https://raw.githubusercontent.com/amiruddinid/car-rental-expo/main/assets/images/img_car.png',
+                }}
+                style={styles.carImage}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.iconContainer}>
+          <View style={styles.iconItem}>
+          <View style={styles.iconBackground}>
+              <ButtonIcon icon = "truck"/>
+            </View>
+            <Text style={styles.iconLabel}>Sewa Mobil</Text>
+          </View>
+          <View style={styles.iconItem}>
+            <View style={styles.iconBackground}>
+            <ButtonIcon icon ="box"/>
+            </View>
+            <Text style={styles.iconLabel}>Oleh-Oleh</Text>
+          </View>
+          <View style={styles.iconItem}>
+            <View style={styles.iconBackground}>
+            <ButtonIcon icon ="key"/>
+            </View>
+            <Text style={styles.iconLabel}>Penginapan</Text>
+          </View>
+          <View style={styles.iconItem}>
+            <View style={styles.iconBackground}>
+            <ButtonIcon icon ="camera"/>
+            </View>
+            <Text style={styles.iconLabel}>Wisata</Text>
+          </View>
+        </View>
+
+        <View style={styles.listContainer}>
+          <Text style={styles.listTitle}>Daftar Mobil Pilihan</Text>
+          <View style={styles.listItem}>
+            <Image
+              source={{ uri: 'https://raw.githubusercontent.com/amiruddinid/car-rental-expo/main/assets/images/img_car.png' }}
+              style={styles.listItemImage}
+            />
+            <View style={styles.listItemTextContainer}>
+              <Text style={styles.listItemTitle}>Innova Zenix</Text>
+              <View style={styles.listItemDetails}>
+                <Text style={styles.listItemDetailText}>4</Text>
+                <Text style={styles.listItemDetailText}>2</Text>
+              </View>
+            </View>
+            <Text style={styles.listItemPrice}>Rp 230.000</Text>
+          </View>
+          <View style={styles.listItem}>
+            <Image
+              source={{ uri: 'https://raw.githubusercontent.com/amiruddinid/car-rental-expo/main/assets/images/img_car.png' }}
+              style={styles.listItemImage}
+            />
+            <View style={styles.listItemTextContainer}>
+              <Text style={styles.listItemTitle}>Innova Zenix</Text>
+              <View style={styles.listItemDetails}>
+                <Text style={styles.listItemDetailText}>4</Text>
+                <Text style={styles.listItemDetailText}>2</Text>
+              </View>
+            </View>
+            <Text style={styles.listItemPrice}>Rp 230.000</Text>
+          </View>
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <View style={styles.footerItem}>
+        <ButtonIcon icon ="home"/>
+          <Text style={styles.footerLabel}>Home</Text>
+        </View>
+        <View style={styles.footerItem}>
+        <ButtonIcon icon ="list"/>
+          <Text style={styles.footerLabel}>Daftar Mobil</Text>
+        </View>
+        <View style={styles.footerItem}>
+        <ButtonIcon icon ="user"/>
+          <Text style={styles.footerLabel}>Akun</Text>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: Colors.primary, // Make header background extend fully
+    height: 180, // Optional: add padding for spacing
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15, // Adjust padding to control header content spacing
+  },
+  contentContainer: {
+    padding: 10,
+    flex: 1,
+    marginTop: -100, // Ensures that content area expands to fill available space
+  },
+  textAndImageContainer: {
+    backgroundColor: Colors.redrom, // Apply a lighter background color for this section
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 10,
+    marginBottom: 20,
+    flexDirection: 'row', // Align text and image horizontally
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textContentLeft: {
+    flex: 1, // Take up all available space on the left
+    justifyContent: 'center',
+  },
+  headerDisplayText: {
+    fontSize: 16,
+    fontWeight: 'italic',
+    color: Colors.lighter,
+    marginBottom: 5,  // Adjust the spacing between the lines of text
+  },
+  button: {
+    backgroundColor: Colors.green,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    marginTop: 10,
+    width: '80%', // Membuat tombol lebih pendek
+    alignSelf: 'flex-start',
+  },
+  buttonText: {
+    color: Colors.lighter,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  carImage: {
+    width: 180, // Adjust image width
+    height: 100,
+  },
+  imagerounded: {
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+  },
+  headerText: {
+    color: Colors.lighter,
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  headerTextLocation: {
+    color: Colors.lighter,
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  iconItem: {
+    alignItems: 'center',
+  },
+  iconBackground: {
+    backgroundColor: Colors.primary,
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  iconText: {
+    fontSize: 20,
+    color: Colors.lighter,
+  },
+  iconLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  listContainer: {
+    padding: 10,
+  },
+  listTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.lighter,
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  listItemImage: {
+    width: 60,
+    height: 40,
+    marginRight: 10,
+  },
+  listItemTextContainer: {
+    flex: 1,
+  },
+  listItemTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  listItemDetails: {
+    flexDirection: 'row',
+    marginTop: 5,
+  },
+  listItemDetailText: {
+    fontSize: 14,
+    color: Colors.textGray,
+    marginRight: 20,
+  },
+  listItemPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.green,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: Colors.lighter,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: Colors.gray,
+  },
+  footerItem: {
+    alignItems: 'center',
+  },
+  footerIcon: {
+    fontSize: 20,
+    color: Colors.primary,
+  },
+  footerLabel: {
+    fontSize: 12,
+    color: Colors.primary,
+  },
+});
+
+export default App;

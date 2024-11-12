@@ -6,12 +6,11 @@ import axios from 'axios';
 
 function Profile() {
   const navigation = useNavigation();
-  const [users, setUser] = useState([]);  // State untuk menyimpan data pengguna
+  const [user, setUser] = useState(null);  // State untuk menyimpan data pengguna
   const [loading, setLoading] = useState(true);  // State untuk memuat data
   const [error, setError] = useState(null);  // State untuk error
 
   useEffect(() => {
-    // Fungsi untuk memeriksa apakah pengguna sudah login
     const checkLoginStatus = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
@@ -46,6 +45,11 @@ function Profile() {
     checkLoginStatus();  // Panggil fungsi saat pertama kali render
   }, [navigation]);
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('authToken');  // Menghapus token dari penyimpanan
+    navigation.navigate('Login');  // Arahkan ke halaman login setelah logout
+  };
+
   // Jika loading, tampilkan indikator loading
   if (loading) {
     return (
@@ -66,28 +70,25 @@ function Profile() {
 
   return (
     <View style={styles.container}>
-      {users ? (
+      {user ? (
         // Jika pengguna sudah login, tampilkan data pengguna
         <View style={styles.profileContainer}>
           {/* Avatar pengguna */}
           <Image
-            source={{ uri: users.avatar || 'https://i.pravatar.cc/100' }}
+            source={{ uri: user.avatar || 'https://i.pravatar.cc/100' }}
             style={styles.avatar}
           />
           {/* Nama pengguna */}
-          <Text style={styles.welcomeMessage}>Selamat datang, {users.fullname}</Text>
+          <Text style={styles.welcomeMessage}>Selamat datang, {user.fullname}</Text>
 
           {/* Email pengguna */}
-          <Text style={styles.Amail}>Email: {users.email}</Text>
+          <Text style={styles.email}>Email: {user.email}</Text>
 
           {/* Tombol logout */}
           <Button
             title="Logout"
-            onPress={async () => {
-              await AsyncStorage.removeItem('authToken');  // Menghapus token
-              navigation.navigate('Login');  // Arahkan kembali ke login
-            }}
-            color="#FF6347"  // Warna merah untuk logout
+            onPress={handleLogout}  // Fungsi logout dipanggil saat tombol ditekan
+            color="#FF6347"  // Warna merah untuk tombol logout
           />
         </View>
       ) : (
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 10,
   },
-  Amail: {
+  email: {
     fontSize: 18,
     color: '#333',
     marginTop: 10,

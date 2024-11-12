@@ -3,34 +3,37 @@ import {
   FlatList,
   useColorScheme,
   View,
-  ActivityIndicator, // To show a loading spinner
-  Text, // To show an error message
+  ActivityIndicator,
+  Text,
+  TouchableOpacity, // To make each item clickable
 } from 'react-native';
 import CarList from '../component/CarList';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 function ListCar() {
   const isDarkMode = useColorScheme() === 'dark';
   const [cars, setCars] = useState([]);
-  const [loading, setLoading] = useState(true); // Track loading state
-  const [error, setError] = useState(null); // Track error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigation = useNavigation(); // Initialize navigation
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
         const res = await axios('https://ugly-baboon-brambt8ihpod-c5531254.koyeb.app/api/v1/cars');
         console.log(res.data);
-        setCars(res.data.data); // Store car data in state
-        setLoading(false); // Stop loading after data is fetched
+        setCars(res.data.data);
+        setLoading(false);
       } catch (e) {
         console.log(e);
         setError('Failed to fetch cars. Please try again later.');
-        setLoading(false); // Stop loading even if there’s an error
+        setLoading(false);
       }
     };
 
     fetchCars();
-  }, []); // Empty dependency array, so this runs only once when the component mounts
+  }, []);
 
   if (loading) {
     return (
@@ -52,22 +55,37 @@ function ListCar() {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={cars} // The cars data from state
+        data={cars}
         renderItem={({ item }) => {
-          // Ensure the image URL is valid, or use a placeholder
           const imageUrl = item.img ? item.img.replace(/^'|'$/g, '') : 'https://via.placeholder.com/150';
+
           return (
-            <CarList
-              key={item.id.toString()} // Unique ID for each item
-              image={{ uri: imageUrl }} // Display car image
-              carName={item.name} // Display car name
-              passengers={5} // Number of passengers (adjust as needed)
-              baggage={4} // Baggage capacity (adjust as needed)
-              price={item.price} // Price from API
-            />
+            <TouchableOpacity
+  onPress={() => {
+    console.log('Item pressed!');
+    navigation.navigate('Detail', {
+      carId: item.id,
+      carName: item.name,
+      carImage: imageUrl,
+      carPrice: item.price,
+      passengers: 5,
+      baggage: 4,
+    });
+  }}
+  style={{ flex: -10}} // Pastikan TouchableOpacity memiliki ukuran yang tepat
+>
+  <CarList
+    key={item.id.toString()}
+    image={{ uri: imageUrl }}
+    carName={item.name}
+    passengers={5}
+    baggage={4}
+    price={item.price}
+  />
+</TouchableOpacity>
           );
         }}
-        keyExtractor={item => item.id.toString()} // Key for each list item
+        keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );

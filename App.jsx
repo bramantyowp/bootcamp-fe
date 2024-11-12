@@ -3,76 +3,77 @@ import Icon from 'react-native-vector-icons/Feather';
 import Home from './src/Screen/Home';
 import ListCar from './src/Screen/ListCar';
 import Profile from './src/Screen/Profile';
-import RegisterScreen from './src/Screen/RegisterScreen'; // Import RegisterScreen
-import LoginScreen from './src/Screen/LoginScreen'; // Import LoginScreen
+import RegisterScreen from './src/Screen/RegisterScreen';
+import LoginScreen from './src/Screen/LoginScreen';
+import DetailScreen from './src/Screen/DetailScreen'; // Import DetailScreen
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack'; // Import Stack Navigator
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator(); // Create Stack Navigator
+const Stack = createStackNavigator();
 
-// Fungsi untuk menampilkan tab navigator
+// Tab Navigator for Home, ListCar, and Profile
 function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#A43333', // Merah untuk tab aktif
-        tabBarInactiveTintColor: '#B0B0B0', // Abu-abu untuk tab tidak aktif
+        tabBarActiveTintColor: '#A43333', // Red for active tab
+        tabBarInactiveTintColor: '#B0B0B0', // Gray for inactive tab
       }}
     >
       <Tab.Screen
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home" size={size} color={color} />
-          ),
-        }}
         name="Home"
         component={Home}
+        options={{
+          tabBarIcon: ({ color, size }) => <Icon name="home" size={size} color={color} />,
+        }}
       />
       <Tab.Screen
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="list" size={size} color={color} />
-          ),
-        }}
         name="List"
         component={ListCar}
+        options={{
+          tabBarIcon: ({ color, size }) => <Icon name="list" size={size} color={color} />,
+          headerShown: true, // Show header
+        }}
       />
       <Tab.Screen
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="user" size={size} color={color} />
-          ),
-        }}
         name="Profile"
         component={Profile}
+        options={{
+          tabBarIcon: ({ color, size }) => <Icon name="user" size={size} color={color} />,
+        }}
       />
     </Tab.Navigator>
   );
 }
+
+// Main App with Stack Navigator
 function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* Halaman utama yang berisi TabNavigator */}
         <Stack.Screen
-          name="HomeTabs" // Nama Tab Navigator
+          name="HomeTabs"
           component={TabNavigator}
-          options={{ headerShown: false }} // Menyembunyikan header Tab
+          options={{ headerShown: false }}
         />
-        {/* Halaman Register */}
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
-          options={{ title: 'Register' }} // Judul halaman Register
+          options={{ title: 'Register' }}
         />
-        {/* Halaman Login */}
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ title: 'Login' }} // Judul halaman Login
+          options={{ title: 'Login' }}
+        />
+        {/* Add DetailScreen to the stack for ListCar */}
+        <Stack.Screen
+          name="Detail"
+          component={DetailScreen}
+          options={{ title: 'Car Details' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

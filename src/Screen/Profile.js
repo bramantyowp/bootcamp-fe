@@ -6,7 +6,7 @@ import axios from 'axios';
 
 function Profile() {
   const navigation = useNavigation();
-  const [user, setUser] = useState(null);  // State untuk menyimpan data pengguna
+  const [user, setUser] = useState([]);  // State untuk menyimpan data pengguna
   const [loading, setLoading] = useState(true);  // State untuk memuat data
   const [error, setError] = useState(null);  // State untuk error
 
@@ -15,42 +15,34 @@ function Profile() {
       try {
         const token = await AsyncStorage.getItem('authToken');
         if (!token) {
-          // Jika token tidak ada, arahkan ke halaman login
-          navigation.navigate('Login');
+          // Jika token tidak ada, tampilkan tampilan login
+          setUser(null);  // Set user ke null jika tidak ada token
           setLoading(false);
           return;
         }
-
         // Jika token ada, ambil data pengguna
-        const response = await axios.get('https://ugly-baboon-brambt8ihpod-c5531254.koyeb.app/api/v1/users', {
+        const response = await axios.get('https://ugly-baboon-brambt8ihpod-c5531254.koyeb.app/api/v1/auth/whoami', {
           headers: {
-            Authorization: `Bearer ${token}`, // Menyertakan token dalam header
+            Authorization: `Bearer ${token}`,  // Menyertakan token dalam header
           },
         });
-
         if (response.data) {
-          console.log(response.data);
-          setUser(response.data);  // Menyimpan data pengguna
+          setUser(response.data.data.user);  // Menyimpan data pengguna
         } else {
           setError('Data pengguna tidak ditemukan.');
         }
-
-        setLoading(false);  // Selesai memuat data
+        setLoading(false);
       } catch (error) {
+        if (error.response && error.response.data.message === 'jwt expired') {
+          navigation.navigate('Login');
+          setError('Token expired. Silakan login kembali.');
+        }
         setError('Gagal memuat data pengguna.');
         setLoading(false);
       }
     };
-
-    checkLoginStatus();  // Panggil fungsi saat pertama kali render
-  }, [navigation]);
-
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('authToken');  // Menghapus token dari penyimpanan
-    navigation.navigate('Login');  // Arahkan ke halaman login setelah logout
-  };
-
-  // Jika loading, tampilkan indikator loading
+    checkLoginStatus();
+  }, [navigation]);  // Pastikan efek dijalankan ulang saat halaman dimuat
   if (loading) {
     return (
       <View style={styles.container}>
@@ -75,21 +67,29 @@ function Profile() {
         <View style={styles.profileContainer}>
           {/* Avatar pengguna */}
           <Image
-            source={{ uri: user.avatar || 'https://i.pravatar.cc/100' }}
+            source={{ uri: user.avatar}}
             style={styles.avatar}
           />
           {/* Nama pengguna */}
           <Text style={styles.welcomeMessage}>Selamat datang, {user.fullname}</Text>
 
           {/* Email pengguna */}
-          <Text style={styles.email}>Email: {user.email}</Text>
+          <Text style={styles.Amail}>Email: {user.email}</Text>
 
           {/* Tombol logout */}
           <Button
-            title="Logout"
-            onPress={handleLogout}  // Fungsi logout dipanggil saat tombol ditekan
-            color="#FF6347"  // Warna merah untuk tombol logout
-          />
+  title="Logout"
+  onPress={async () => {
+    await AsyncStorage.removeItem('authToken');  // Menghapus token
+    // Reset navigasi dan arahkan ke halaman awal yang tidak login
+    navigation.reset({
+      index: 0,  // Reset ke indeks pertama
+      routes: [{ name: 'Profile' }],  // Arahkan ke halaman Profile yang tidak login
+    });
+  }}
+  color="#FF6347"  // Warna merah untuk logout
+/>
+
         </View>
       ) : (
         // Jika belum login, tampilkan pesan
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 10,
   },
-  email: {
+  Amail: {
     fontSize: 18,
     color: '#333',
     marginTop: 10,

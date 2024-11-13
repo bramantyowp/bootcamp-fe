@@ -13,6 +13,8 @@ import Button from '../component/button';
 import Icon from 'react-native-vector-icons/Feather';
 import CarList from '../component/CarList';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+
 
 const COLORS = {
   primary: '#A43333',
@@ -35,7 +37,7 @@ const ButtonIcon = ({ icon, title }) => (
 function Home() {
   const isDarkMode = useColorScheme() === 'dark';
   const [cars, setCars] = useState([]);
-
+  const navigation = useNavigation();
   // Fetching data menggunakan useEffect dan axios
   useEffect(() => {
     const fetchCars = async () => {
@@ -111,11 +113,20 @@ function Home() {
             const imageUrl = item.img ? item.img.replace(/^'|'$/g, '') : 'https://via.placeholder.com/150';
             return (
               <CarList
+              onPress={() =>
+                navigation.navigate('Detail', {
+                  carName: item.name,
+                  carImage: imageUrl,
+                  carPrice: item.price,
+                  baggage: item.baggage,
+              seat:item.seat,
+                })
+              }
                 key={item.id.toString()}  // Unik ID untuk setiap item
                 image={{ uri: imageUrl }}  // Menampilkan gambar mobil
-                carName={item.name}  // Nama mobil
-                passengers={5}  // Jumlah penumpang (sesuaikan jika perlu)
-                baggage={4}  // Kapasitas bagasi (sesuaikan jika perlu)
+                carName={item.name}  //Nama mobil
+                passengers={item.seat}
+                baggage={item.baggage}
                 price={item.price}  // Harga mobil (dari API)
               />
             );
